@@ -229,6 +229,8 @@ int	execute_command(command_t *cmd, t_env **env)
 			result = builtin_export(cmd->args, env);
 		else if (ft_strcmp(cmd->name, "unset") == 0)
 			result = builtin_unset(cmd->args, env);
+		else if (ft_strcmp(cmd->name, "help") == 0)
+			result = builtin_help();
 		dup2(saved_stdin, STDIN_FILENO);
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdin);
@@ -486,6 +488,45 @@ char *expand_vars(const char *input, t_env *env, int last_status)
     return (result);
 }
 
+int builtin_help(void)
+{
+    printf("\033[1;36m╔═════════════════════════════════════════════════╗\033[0m\n");
+    printf("\033[1;36m║\033[0m            \033[1;33mMINISHELL HELP\033[0m             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m╠═════════════════════════════════════════════════╣\033[0m\n");
+    printf("\033[1;36m║\033[0m                                             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m  \033[1;32mBuilt-in Commands:\033[0m                        \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m                                             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mcd [directory]\033[0m    - Change directory    \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mpwd\033[0m               - Print working dir   \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mecho [text]\033[0m       - Print text          \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35menv\033[0m              - Display env vars     \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mexport VAR=value\033[0m  - Set env variable    \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35munset VAR\033[0m        - Unset env variable   \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mexit\033[0m              - Exit the shell       \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mhelp\033[0m              - Show this help       \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mhistory\033[0m           - Show history         \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mhistory -c\033[0m        - Clear history        \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m                                             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m  \033[1;32mAdvanced Features:\033[0m                        \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m                                             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mPipelines:\033[0m        \033[1;37mcmd1 | cmd2\033[0m          \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mInput:\033[0m            \033[1;37mcmd < file\033[0m            \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mOutput:\033[0m           \033[1;37mcmd > file\033[0m            \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mAppend:\033[0m            \033[1;37mcmd >> file\033[0m           \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mHeredoc:\033[0m          \033[1;37mcmd << EOF\033[0m            \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;35mVariables:\033[0m        \033[1;37m$VAR\033[0m or \033[1;37m${VAR}\033[0m        \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m                                             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m  \033[1;32mExamples:\033[0m                              \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m                                             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;37mls | grep .c\033[0m                          \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;37mexport MY_VAR=\"test\"\033[0m                  \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;37mecho $MY_VAR\033[0m                          \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m    \033[1;37mls > output.txt\033[0m                        \033[1;36m║\033[0m\n");
+    printf("\033[1;36m║\033[0m                                             \033[1;36m║\033[0m\n");
+    printf("\033[1;36m╚═════════════════════════════════════════════════╝\033[0m\n");
+    return (0);
+}
+
 int is_builtin(const char *name) {
     return (strcmp(name, "cd") == 0 ||
             strcmp(name, "pwd") == 0 ||
@@ -493,7 +534,37 @@ int is_builtin(const char *name) {
             strcmp(name, "env") == 0 ||
             strcmp(name, "export") == 0 ||
             strcmp(name, "unset") == 0 ||
-            strcmp(name, "exit") == 0);
+            strcmp(name, "exit") == 0 ||
+            strcmp(name, "help") == 0);
+}
+
+void print_startup_banner(void)
+{
+    printf("\033[1;36m");
+    printf("╔═════════════════════════════════════════════════╗\n");
+    printf("║                                                 ║\n");
+    printf("║          ███╗   ███╗██╗███╗   ██╗██╗            ║\n");
+    printf("║          ████╗ ████║██║████╗  ██║██║            ║\n");
+    printf("║          ██╔████╔██║██║██╔██╗ ██║██║            ║\n");
+    printf("║          ██║╚██╔╝██║██║██║╚██╗██║██║            ║\n");
+    printf("║          ██║ ╚═╝ ██║██║██║ ╚████║██║            ║\n");
+    printf("║          ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝            ║\n");
+    printf("║                                                 ║\n");
+    printf("║     ███████╗██╗  ██╗███████╗██╗     ██╗         ║\n");
+    printf("║     ██╔════╝██║  ██║██╔════╝██║     ██║         ║\n");
+    printf("║     ███████╗███████║█████╗  ██║     ██║         ║\n");
+    printf("║     ╚════██║██╔══██║██╔══╝  ██║     ██║         ║\n");
+    printf("║     ███████║██║  ██║███████╗███████╗███████╗    ║\n");
+    printf("║     ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝    ║\n");
+    printf("║                                                 ║\n");
+    printf("║        A minimal shell implementation           ║\n");
+    printf("║                                                 ║\n");
+    printf("╚═════════════════════════════════════════════════╝\n");
+    printf("\033[0m");
+    printf("\n");
+    printf("\033[1;33mWelcome to minishell!\033[0m\n");
+    printf("Type 'exit' or press Ctrl+D to quit.\n");
+    printf("Type 'help' for available commands.\n\n");
 }
 
 int main(int argc, char **argv, char **env)
@@ -505,6 +576,8 @@ int main(int argc, char **argv, char **env)
 
     signal(SIGINT, sigint_handler);
     signal(SIGQUIT, SIG_IGN);
+
+    print_startup_banner();
 
     t_env *copy_env;
     ft_copy_env(env, &copy_env);
